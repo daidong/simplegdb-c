@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <string.h>
+
 #include "dbkey.h"
 
 DBKey* build(const DBT *a){
@@ -41,7 +44,7 @@ void pprint(const DBKey* key){
 	printf(" -> ");
 	for (int i = 0; i < key->dst.size; i++)
 		printf("%c", *(key->dst.data + i));
-	printf(" [%d][%ld]\n", key->type, key->ts);
+	printf(" [%d][%llu]\n", key->type, key->ts);
 }
 
 u_int32_t key_size(const DBKey* key){
@@ -60,7 +63,8 @@ int compare_slice(Slice a, Slice b){
 	return 0;
 }
 
-int compare_dbkey(DB *dbp, const DBT *a, const DBT *b){
+int compare_dbkey(DB *dbp, const DBT *a, const DBT *b, size_t *locp){
+	locp = NULL;
 	DBKey* _a = build(a);
 	DBKey* _b = build(b);
 	

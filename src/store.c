@@ -1,9 +1,21 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "store.h"
 #include "dbkey.h"
 
+/* global variables */
+
+DB_ENV *SGDB_Env;
+DB *SGDB_dbp;
+
+const char *SGDB_DB_FILE = "db";
+const char *SGDB_ENV_DIR = "/tmp/gdb";
+
 int SGDB_init(){
 	u_int32_t flags;
-	u_int32_t env_flags;SGDB_Env
+	u_int32_t env_flags;
 	int ret;
 	
 	ret = db_env_create(&SGDB_Env, 0);
@@ -30,7 +42,7 @@ int SGDB_init(){
 		return -1;
 	}
 	
-	SGDB_dbp->set_bt_compare(SGDB_dbp, compare_dbkey); //set the comparator, must before open
+	SGDB_dbp->set_bt_compare(SGDB_dbp, &compare_dbkey); //set the comparator, must before open
 
 	flags = DB_CREATE; //DB_EXCL, DB_RDONLY, DB_TRUNCATE; DB->get_open_flags()
 	ret = SGDB_dbp->open(SGDB_dbp,
@@ -44,6 +56,7 @@ int SGDB_init(){
 		fprintf(stderr, "Database open failed: %s", db_strerror(ret));
 		return -1;
 	}
+	return ret;
 }
 
 void SGDB_close(){
@@ -70,7 +83,7 @@ int SGDB_insert(char *src, u_int32_t ssize, char *dst, u_int32_t dsize, u_int32_
 	memset(&key, 0, sizeof(DBT));
 	memset(&value, 0, sizeof(DBT));
 	
-	key.data = decompose(dbkey, &key.size);
+	key.data = decompose(&dbkey, &key.size);
 	
 	value.size = vsize;
 	value.data = val;
@@ -78,7 +91,7 @@ int SGDB_insert(char *src, u_int32_t ssize, char *dst, u_int32_t dsize, u_int32_
 	ret = SGDB_dbp->put(SGDB_dbp, NULL, &key, &value, DB_NOOVERWRITE);
 	if (ret == DB_KEYEXIST) {
 	    SGDB_dbp->err(SGDB_dbp, ret,
-	      "Put failed because key %f already exists", money);
+	      "Put failed because key already exists");
 	}
 	return ret;
 }
@@ -97,9 +110,9 @@ char* SGDB_get(char *src, u_int32_t ssize, char *dst, u_int32_t dsize, u_int32_t
 	memset(&key, 0, sizeof(DBT));
 	memset(&value, 0, sizeof(DBT));
 	
-	key.data = decompose(dbkey, &key.size);
+	key.data = decompose(&dbkey, &key.size);
 	
-	int ret = SGDB_dbp->get(SGDB_dbp, NULL, &key, &value, 0);
+	SGDB_dbp->get(SGDB_dbp, NULL, &key, &value, 0);
 	*vsize = value.size;
 	return value.data;
 }
@@ -119,25 +132,7 @@ int SGDB_del(char *src, u_int32_t ssize, char *dst, u_int32_t dsize, u_int32_t t
 	memset(&key, 0, sizeof(DBT));
 	memset(&value, 0, sizeof(DBT));
 	
-	key.data = decompose(dbkey, &key.size);
+	key.data = decompose(&dbkey, &key.size);
 	ret = SGDB_dbp->del(SGDB_dbp, NULL, &key, 0);
 	return ret;
-}
-
-void __insert_example(){
-    
-	MY_STRUCT user;
-	/* Initialize the structure */
-	memset(&user, 0, sizeof(MY_STRUCT));
-	user.id = 1;
-	key.data = &user.id;
-	key.size = sizeof(int);
-	/* Use our memory to retrieve the structure */
-	data.data = &user;
-	data.ulen = sizeof(MY_STRUCT);
-	data.flags = DB_DBT_USERMEM;
-	SGDB_dbp->get(SGDB_dbp, NULL, &key, &data, 0);
-	
-	
-	SGDB_dbp->del(SGDB_dbp, NULL, &key, 0);
 }

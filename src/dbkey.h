@@ -14,10 +14,10 @@ typedef struct _DBKey_ {
 	u_int32_t type;
 } DBKey;
 
-int compare_dbkey(DB *dbp, const DBT *a, const DBT *b)
+int compare_dbkey(DB *dbp, const DBT *a, const DBT *b, size_t *locp);
 DBKey* build(const DBT *a);
 char* decompose(DBKey* key, u_int32_t *size);
-void pprint(DBKey* key);
+void pprint(const DBKey* key);
 u_int32_t key_size(const DBKey* key);
 
 #endif

@@ -42,7 +42,7 @@ int SGDB_init(){
 		return -1;
 	}
 	
-	SGDB_dbp->set_bt_compare(SGDB_dbp, &compare_dbkey); //set the comparator, must before open
+	SGDB_dbp->set_bt_compare(SGDB_dbp, compare_dbkey); //set the comparator, must before open
 
 	flags = DB_CREATE; //DB_EXCL, DB_RDONLY, DB_TRUNCATE; DB->get_open_flags()
 	ret = SGDB_dbp->open(SGDB_dbp,

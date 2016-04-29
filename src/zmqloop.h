@@ -3,10 +3,23 @@
 #include <zmq.h>
 
 #define REQUEST_TIMEOUT 2500 //msecs, (> 1000!)
-#define REQUEST_RETRIES 3
 #define SERVER_ENDPOINT "tcp://localhost:5555"
 
-void SGDB_init_srv();
-void SGDB_init_clt();
+#define MAX_ZMQ_PACKAGE_SIZE 4096
+
+typedef struct _sgdb_command{
+    char type;
+    char *payload;
+} SGDB_Command;
+
+typedef struct _zmq_ctx_socket_{
+    void *context;
+    void *socket;
+} SGDB_RPC_Client;
+
+void SGDB_init_srv(char* _port);
+SGDB_RPC_Client* void SGDB_init_clt(char* _addr, char* _port);
+void SGDB_close_clt(SGDB_RPC_Client* client);
+void SGDB_send(void *s, void *data, size_t size);
 
 #endif

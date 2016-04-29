@@ -44,7 +44,7 @@ void pprint(const DBKey* key){
 	printf(" -> ");
 	for (int i = 0; i < key->dst.size; i++)
 		printf("%c", *(key->dst.data + i));
-	printf(" [%d][%ld]\n", key->type, key->ts);
+	printf(" [%d][%llu]\n", key->type, key->ts);
 }
 
 u_int32_t key_size(const DBKey* key){

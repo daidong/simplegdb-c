@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <assert.h>
+
 #include "zmqloop.h"
 #include "string.h"
 
@@ -8,7 +11,7 @@ void SGDB_free(void *data, void *hint){
     free(data);
 }
 
-/* @TODO: this is not correct. */
+/* @TODO: this is not correct.
 void SGDB_send_with_retry(void *s, void *data, size_t size, int REQUEST_RETRIES){
 
     int sequence = 0;
@@ -38,6 +41,7 @@ void SGDB_send_with_retry(void *s, void *data, size_t size, int REQUEST_RETRIES)
         }
     }
 }
+*/
 
 void SGDB_send(void *s, void *data, size_t size){
     int loops = size / MAX_ZMQ_PACKAGE_SIZE + (size % MAX_ZMQ_PACKAGE_SIZE == 0) ? 0 : 1;
@@ -48,14 +52,14 @@ void SGDB_send(void *s, void *data, size_t size){
 
         if (loops == 0){ /* This is last package */
             zmq_msg_init_data (&msg, data, size, SGDB_free, hint);
-            zmq_send (s, &msg, 0);
+            zmq_sendmsg (s, &msg, 0);
         } else {
             zmq_msg_init_data(&msg, data, MAX_ZMQ_PACKAGE_SIZE, SGDB_free, hint);
-            zmq_send (s, &msg, ZMQ_SNDMORE);
+            zmq_sendmsg (s, &msg, ZMQ_SNDMORE);
             data += MAX_ZMQ_PACKAGE_SIZE;
             size -= MAX_ZMQ_PACKAGE_SIZE;
         }
-        zmq_msg_close(msg);
+        zmq_msg_close(&msg);
     }
 }
 
@@ -73,7 +77,7 @@ void SGDB_srv_loop(){
             int rc = zmq_msg_init (&part);
             assert (rc == 0);
             /* Block until a message is available to be received from socket */
-            rc = zmq_recv (server, &part, 0);
+            rc = zmq_recvmsg (server, &part, 0);
             assert (rc == 0);
 
             /* Determine if more message parts are to follow */
@@ -141,7 +145,6 @@ void SGDB_close_clt(SGDB_RPC_Client* client){
 }
 
 SGDB_RPC_Client* SGDB_init_clt(char* _addr, char* _port){
-    int port = atoi(_port);
     char * addr = strcat(_addr, ":");
     addr = strcat(addr, _port);
 

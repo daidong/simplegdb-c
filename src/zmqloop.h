@@ -18,7 +18,7 @@ typedef struct _zmq_ctx_socket_{
 } SGDB_RPC_Client;
 
 void SGDB_init_srv(char* _port);
-SGDB_RPC_Client* void SGDB_init_clt(char* _addr, char* _port);
+SGDB_RPC_Client* SGDB_init_clt(char* _addr, char* _port);
 void SGDB_close_clt(SGDB_RPC_Client* client);
 void SGDB_send(void *s, void *data, size_t size);
 

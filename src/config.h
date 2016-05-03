@@ -1,16 +1,20 @@
 #ifndef _CONFIG_H_
 
 #define CONFIG_FILE "config.conf"
-#define MAXBUF 1024
+#define MAXPATH 1024
+#define MAXSRVSTR 32
+#define MAXSRV 1024
 #define DELIM "="
 
-struct config{
-    char server_list[MAXBUF];
-    char port[MAXBUF];
-    char db_file[MAXBUF];
-    char db_env[MAXBUF];
-};
+typedef struct _config_{
+    char server_list[MAXSRV][MAXSRVSTR];
+	int server_number;
+	char port[MAXSRVSTR];
+	
+    char db_file[MAXPATH];
+    char db_env[MAXPATH];
+} SGDB_CONFIG;
 
-struct config get_config();
+SGDB_CONFIG* get_config();
 
 #endif

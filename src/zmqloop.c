@@ -44,7 +44,7 @@ void SGDB_send_with_retry(void *s, void *data, size_t size, int REQUEST_RETRIES)
 */
 
 void SGDB_send(void *s, void *data, size_t size){
-    int loops = size / MAX_ZMQ_PACKAGE_SIZE + (size % MAX_ZMQ_PACKAGE_SIZE == 0) ? 0 : 1;
+    int loops = size / MAX_ZMQ_PACKAGE_SIZE + ((size % MAX_ZMQ_PACKAGE_SIZE == 0) ? 0 : 1);
 
     while (loops--){
         zmq_msg_t msg;
@@ -124,13 +124,15 @@ void SGDB_srv_loop(){
 }
 
 void SGDB_init_srv(char* _port){
-    context = zmq_ctx_new();
+	context = zmq_ctx_new();
     server = zmq_socket(context, ZMQ_REP);
 
-    char *addr = "tcp://*:";
-    addr = strcat(addr, _port);
-    zmq_bind(server, "tcp://*:5555");
-
+    char addr[32] = "tcp://*:";
+    strcat(addr, _port);
+	printf("binding address: %s\n", addr);
+	
+    zmq_bind(server, addr);
+	
     //this should not exit
     SGDB_srv_loop();
 

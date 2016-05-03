@@ -11,6 +11,7 @@ static DB_ENV *SGDB_Env;
 static DB *SGDB_dbp;
 
 int SGDB_init(char *SGDB_DB_FILE, char *SGDB_ENV_DIR){
+	printf("SGDB_DB_FILE: %s, ENV_DIR: %s\n", SGDB_DB_FILE, SGDB_ENV_DIR);
 	u_int32_t flags;
 	u_int32_t env_flags;
 	int ret;

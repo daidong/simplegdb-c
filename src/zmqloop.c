@@ -46,7 +46,7 @@ void SGDB_send_with_retry(void *s, void *data, size_t size, int REQUEST_RETRIES)
 void SGDB_send(void *s, void *data, size_t size){
     int loops = size / MAX_ZMQ_PACKAGE_SIZE + ((size % MAX_ZMQ_PACKAGE_SIZE == 0) ? 0 : 1);
 
-    while (loops--){
+    while (loops--){		
         zmq_msg_t msg;
         void *hint = NULL;
 
@@ -64,6 +64,7 @@ void SGDB_send(void *s, void *data, size_t size){
 }
 
 void SGDB_srv_loop(){
+	
     while (1){
         int64_t more = 0;
         size_t more_size = sizeof(more);
@@ -76,10 +77,13 @@ void SGDB_srv_loop(){
             /* Create an empty ØMQ message to hold the message part */
             int rc = zmq_msg_init (&part);
             assert (rc == 0);
+			printf("Wait for Msg\n");
+			
             /* Block until a message is available to be received from socket */
             rc = zmq_recvmsg (server, &part, 0);
             assert (rc == 0);
-
+			printf("Get Message\n");
+			
             /* Determine if more message parts are to follow */
             rc = zmq_getsockopt (server, ZMQ_RCVMORE, &more, &more_size);
             if (rc == 0){ /* This is single part message; zero-copy */
@@ -131,7 +135,8 @@ void SGDB_init_srv(char* _port){
     strcat(addr, _port);
 	printf("binding address: %s\n", addr);
 	
-    zmq_bind(server, addr);
+    int rc = zmq_bind(server, addr);
+	assert (rc == 0);
 	
     //this should not exit
     SGDB_srv_loop();
@@ -146,10 +151,9 @@ void SGDB_close_clt(SGDB_RPC_Client* client){
     zmq_ctx_destroy(client->context);
 }
 
-SGDB_RPC_Client* SGDB_init_clt(char* _addr, char* _port){
-    char * addr = strcat(_addr, ":");
-    addr = strcat(addr, _port);
-
+SGDB_RPC_Client* SGDB_init_clt(char* addr){
+    printf("connect to address: %s\n", addr);
+	
     SGDB_RPC_Client* client = (SGDB_RPC_Client *) malloc (sizeof(SGDB_RPC_Client));
 
     client->context = zmq_ctx_new();

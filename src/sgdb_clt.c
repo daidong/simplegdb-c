@@ -5,11 +5,19 @@
 
 int main(int argc, char **argv) {
 	SGDB_CONFIG* conf = get_config();
-    SGDB_RPC_Client *c = SGDB_init_clt(conf->server_list[0], conf->port);
-    SGDB_Command *m = (SGDB_Command *)malloc(sizeof(SGDB_Command));
-    m->type = 'i';
-    m->payload = "Insert";
-    size_t size = sizeof(m->type) + strlen(m->payload);
-    SGDB_send(c->socket, (void *) m, size);
-    SGDB_close_clt(c);
+	int i = 0;
+	
+	for (i = 0; i < conf->server_number; i++){
+		SGDB_RPC_Client *c = SGDB_init_clt(conf->server_list[i]);
+		
+		SGDB_Command *m = (SGDB_Command *)malloc(sizeof(SGDB_Command));
+	    m->type = 'i';
+	    m->payload = "Insert";
+		size_t size = sizeof(m->type) + strlen(m->payload);
+		printf("Send Item: %s[%lu]\n", m->payload, size);
+		
+	    SGDB_send(c->socket, (void *) m, size);
+		
+	    SGDB_close_clt(c);
+	}
 }

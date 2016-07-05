@@ -2,10 +2,8 @@
 Simplest Distributed Graph Databases
 
 ## dependencies
-zeromq 4.0+
+Mercury
 
 berkeleyDB 4.8+
 
 libconfigure 1.0+
-
-protobuffer

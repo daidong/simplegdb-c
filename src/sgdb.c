@@ -2,7 +2,6 @@
 #include "config.h"
 #include "zmqloop.h"
 
-
 int main(int argc, char **argv) {
 	SGDB_CONFIG* conf = get_config();
 	SGDB_init(conf->db_file, conf->db_env);

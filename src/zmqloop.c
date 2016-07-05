@@ -46,10 +46,7 @@ void SGDB_srv_loop(void *server){
 			
             /* Block until a message is available to be received from socket */
             rc = zmq_msg_recv (&part, server, 0);
-			if (rc == -1){
-				printf("Error: %s\n", strerror(errno));
-				return;
-			}
+			assert (rc != -1);
 			
             /* Determine if more message parts are to follow */
             rc = zmq_getsockopt (server, ZMQ_RCVMORE, &more, &more_size);

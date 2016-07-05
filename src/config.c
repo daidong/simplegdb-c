@@ -64,13 +64,13 @@ SGDB_CONFIG* get_config(){
              ))
           continue;
 		
-		char addr[MAXSRVSTR] = {0};
-		strcpy(addr, protocol);
+		    char addr[MAXSRVSTR] = {0};
+		    strcpy(addr, protocol);
         strcat(addr, "://");
-		strcat(addr, address);
-		strcat(addr, ":");
-		strcat(addr, port);
-		memcpy(configstruct->server_list[i], addr, strlen(addr));
+		    strcat(addr, address);
+		    strcat(addr, ":");
+		    strcat(addr, port);
+		    memcpy(configstruct->server_list[i], addr, strlen(addr));
       }
 	  
 	  //for (i = 0; i < configstruct->server_number; i++)

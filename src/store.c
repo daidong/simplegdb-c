@@ -10,7 +10,7 @@
 static DB_ENV *SGDB_Env;
 static DB *SGDB_dbp;
 
-int SGDB_init(char *SGDB_DB_FILE, char *SGDB_ENV_DIR){
+int sgdb_init(char *SGDB_DB_FILE, char *SGDB_ENV_DIR){
 	printf("SGDB_DB_FILE: %s, ENV_DIR: %s\n", SGDB_DB_FILE, SGDB_ENV_DIR);
 	u_int32_t flags;
 	u_int32_t env_flags;
@@ -57,7 +57,7 @@ int SGDB_init(char *SGDB_DB_FILE, char *SGDB_ENV_DIR){
 	return ret;
 }
 
-void SGDB_close(){
+void sgdb_close(){
 	if (SGDB_dbp != NULL)
 		SGDB_dbp->close(SGDB_dbp, 0);
 	if (SGDB_Env != NULL)
@@ -66,7 +66,7 @@ void SGDB_close(){
 	//SGDB_dbp->remove(SGDB_dbp, dbf, NULL, 0);
 }
 
-int SGDB_insert(char *src, u_int32_t ssize, char *dst, u_int32_t dsize, u_int32_t type, u_int64_t ts, char *val, u_int32_t vsize){
+int sgdb_insert(char *src, u_int32_t ssize, char *dst, u_int32_t dsize, u_int32_t type, u_int64_t ts, char *val, u_int32_t vsize){
 	DBKey dbkey;
 	Slice _a = {ssize, src};
 	Slice _b = {dsize, dst};
@@ -94,7 +94,7 @@ int SGDB_insert(char *src, u_int32_t ssize, char *dst, u_int32_t dsize, u_int32_
 	return ret;
 }
 
-char* SGDB_get(char *src, u_int32_t ssize, char *dst, u_int32_t dsize, u_int32_t type, u_int64_t ts, u_int32_t *vsize){
+char* sgdb_get(char *src, u_int32_t ssize, char *dst, u_int32_t dsize, u_int32_t type, u_int64_t ts, u_int32_t *vsize){
 	DBKey dbkey;
 	Slice _a = {ssize, src};
 	Slice _b = {dsize, dst};
@@ -115,7 +115,7 @@ char* SGDB_get(char *src, u_int32_t ssize, char *dst, u_int32_t dsize, u_int32_t
 	return value.data;
 }
 
-int SGDB_del(char *src, u_int32_t ssize, char *dst, u_int32_t dsize, u_int32_t type, u_int64_t ts){
+int sgdb_del(char *src, u_int32_t ssize, char *dst, u_int32_t dsize, u_int32_t type, u_int64_t ts){
 	DBKey dbkey;
 	Slice _a = {ssize, src};
 	Slice _b = {dsize, dst};

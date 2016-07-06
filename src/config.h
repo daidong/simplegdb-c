@@ -13,8 +13,8 @@ typedef struct _config_{
 	
     char db_file[MAXPATH];
     char db_env[MAXPATH];
-} SGDB_CONFIG;
+} sgdb_config;
 
-SGDB_CONFIG* get_config();
+sgdb_config* get_config();
 
 #endif

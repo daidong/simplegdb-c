@@ -6,9 +6,9 @@
 
 #include "config.h"
 
-SGDB_CONFIG* get_config(){
+sgdb_config* get_config(){
 
-    SGDB_CONFIG* configstruct = malloc(sizeof(SGDB_CONFIG));
+    sgdb_config* configstruct = malloc(sizeof(sgdb_config));
     
     config_t cfg;
     config_setting_t *setting;
